@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\InfoTrack.WebScraper.Core\InfoTrack.WebScraper.Core.csproj" />
+    <ProjectReference Include="..\InfoTrack.WebScraper.Dtos\InfoTrack.WebScraper.Dtos.csproj" />
+  </ItemGroup>
+
+</Project>

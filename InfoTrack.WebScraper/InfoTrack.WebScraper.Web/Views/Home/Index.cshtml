@@ -1,0 +1,91 @@
+﻿@model InfoTrack.WebScraper.Web.Models.SubmitModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div>
+    <h3 class="display-4">Search</h3>
+    
+    <div id="errorSection" class="d-none">
+        <div class="alert alert-danger" id="errorText">An error has occurred :( Please try again!</div>
+    </div>
+
+    <form method="post" class="col-sm-6">
+        <div class="form-group row">
+            <label asp-for="@Model.Url" class="col-sm-3 col-form-label"></label>
+            <div class="col-sm-7">
+                <input id="url" asp-for="@Model.Url" class="form-control">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label asp-for="@Model.SearchTerms" class="col-sm-3 col-form-label"></label>
+            <div class="col-sm-7">
+                <input id="searchTerms" asp-for="@Model.SearchTerms" class="form-control">
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-7 offset-sm-3">
+                <button class="btn btn-primary" id="submit">Submit</button>
+            </div>
+        </div>
+    </form>
+    
+    <div id="resultSection" class="d-none">
+        <br />
+        <h3 class="display-4">Results</h3>
+        <div class="col-sm-6">
+            <div class="form-group row">
+                <label id="hitsFound" class="col-sm-3 col-form-label">Hits Found</label>
+                <div class="col-sm-7">
+                    <input id="results" class="form-control" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        $(function () {
+            $('#submit').on('click', function (evt) {
+                evt.preventDefault();
+
+                $('#resultSection').addClass("d-none");
+                $('#errorSection').addClass("d-none");
+
+                $.post("@Url.Action("Submit")", $('form').serialize(), function (result) {
+
+                    if (result.success) {
+
+                        $('#results').val(result.hits)
+                        $('#resultSection').removeClass("d-none");
+
+                    } else {
+
+                        $('#errorSection').removeClass("d-none");
+
+                        if ($.isArray(result.errors)) {
+
+                            var errorMessage = "";
+
+                            for (var e = 0; e < result.errors.length; e++) {
+                                errorMessage += result.errors[e] + "\n";
+                            }
+
+                            $('#errorText').text(errorMessage);
+                            $('#errorText').html($('#errorText').html().replace(/\n/g, '<br/>'));
+
+                        } else if (result.errors) {
+
+                            $('#errorText').text(result.errors);
+
+                        }
+                    }
+
+                }).fail(function (message) {
+                    alert(message.responseText);
+                });
+            });
+        });
+    </script>
+}
